@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+/* Custom Utilities if needed */
+.gold-text {
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+section {
+  width: 100%;
+}
