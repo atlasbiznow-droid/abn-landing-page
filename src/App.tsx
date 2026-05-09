@@ -1,7 +1,23 @@
+import React, { useState } from 'react'
 import './App.css'
 import logo from './assets/logo.png'
 
 function App() {
+  const [url, setUrl] = useState('')
+  const [isScanning, setIsScanning] = useState(false)
+  const [isComplete, setIsComplete] = useState(false)
+
+  const handleAnalyze = () => {
+    if (!url) return
+    setIsScanning(true)
+    
+    // Simulate high-tech scan for the demo
+    setTimeout(() => {
+      setIsScanning(false)
+      setIsComplete(true)
+    }, 4000)
+  }
+
   return (
     <div className="min-h-screen">
       {/* Navbar */}
@@ -30,7 +46,7 @@ function App() {
             automate your bookings, and scale your content 24/7.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <button className="btn-primary px-10 py-4 text-lg">Get My Free Audit</button>
+            <button className="btn-primary px-10 py-4 text-lg" onClick={() => document.getElementById('audit')?.scrollIntoView({ behavior: 'smooth' })}>Get My Free Audit</button>
             <button className="glass px-10 py-4 text-lg font-semibold hover:bg-white/5 transition">See the System</button>
           </div>
         </div>
@@ -79,19 +95,55 @@ function App() {
       <section id="audit" className="py-24 px-6">
         <div className="max-w-4xl mx-auto glass p-12 text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-200 to-amber-600"></div>
-          <h2 className="text-4xl font-black mb-6">Stop Leaving Money On The Table.</h2>
-          <p className="text-gray-400 mb-8 text-lg">
-            Our autonomous lead engine scans for the biggest gaps in your current system. 
-            Get a free "Big 3" audit delivered to your inbox in 2 minutes.
-          </p>
-          <div className="flex max-w-md mx-auto gap-2">
-            <input 
-              type="text" 
-              placeholder="Your Business Website URL" 
-              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-amber-500"
-            />
-            <button className="btn-primary">Analyze</button>
-          </div>
+          
+          {!isComplete ? (
+            <>
+              <h2 className="text-4xl font-black mb-6">Stop Leaving Money On The Table.</h2>
+              <p className="text-gray-400 mb-8 text-lg">
+                Our autonomous lead engine scans for the biggest gaps in your current system. 
+                Get a free "Big 3" audit delivered to your inbox.
+              </p>
+              <div className="flex flex-col md:flex-row max-w-xl mx-auto gap-3">
+                <input 
+                  type="text" 
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="Your Business Website URL (e.g. example.com)" 
+                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-6 py-4 focus:outline-none focus:border-amber-500 transition-all"
+                  disabled={isScanning}
+                />
+                <button 
+                  onClick={handleAnalyze}
+                  disabled={isScanning || !url}
+                  className="btn-primary min-w-[140px] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isScanning ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
+                      Analyzing...
+                    </span>
+                  ) : 'Analyze Site'}
+                </button>
+              </div>
+              {isScanning && (
+                <div className="mt-6 text-amber-500 font-mono text-sm animate-pulse">
+                  [SYSTEM] Detecting Vision Gaps... Checking Booking Bot...
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="py-10 animate-in fade-in zoom-in duration-500">
+              <div className="text-6xl mb-6">✅</div>
+              <h2 className="text-4xl font-black mb-4">Analysis Complete!</h2>
+              <p className="text-gray-400 text-lg mb-8 max-w-md mx-auto">
+                We've found 3 critical revenue gaps on <span className="text-amber-400">{url}</span>. 
+                Your full "Big 3" Audit is being sent to your inbox now.
+              </p>
+              <button onClick={() => setIsComplete(false)} className="text-gray-500 hover:text-white transition text-sm">
+                Analyze another site
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
