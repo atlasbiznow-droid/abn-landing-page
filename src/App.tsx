@@ -25,7 +25,11 @@ function App() {
   }
 
   const bookDemo = () => {
-    window.location.href = 'mailto:contact@atlasbiznow.com?subject=Booking a Demo - AtlasBizNow';
+    window.open('https://www.atlasbiznow.com', '_blank');
+  }
+
+  const callAgent = () => {
+    window.location.href = 'tel:952-592-8527';
   }
 
   return (
@@ -41,7 +45,7 @@ function App() {
           <button onClick={() => scrollTo('audit')} className="hover:text-amber-400 transition">Free Audit</button>
           <button onClick={() => scrollTo('results')} className="hover:text-amber-400 transition">Results</button>
         </div>
-        <button onClick={bookDemo} className="btn-primary text-sm">Book Demo</button>
+        <button onClick={bookDemo} className="btn-primary text-sm">Experience the Agent</button>
       </nav>
 
       {/* Hero */}
@@ -174,7 +178,7 @@ function App() {
               <p className="text-gray-400">Never miss another lead. Our systems run while you sleep, every single day.</p>
             </div>
           </div>
-          <button onClick={bookDemo} className="btn-primary mt-12 px-10 py-4">Scale My Business Now</button>
+          <button onClick={callAgent} className="btn-primary mt-12 px-10 py-4">Experience the Voice Agent</button>
         </div>
       </section>
 
