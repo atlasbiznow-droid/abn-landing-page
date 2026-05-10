@@ -18,12 +18,21 @@ function App() {
     }, 4500)
   }
 
-  const submitEmail = (e: React.FormEvent) => {
+  const submitEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return
     
-    // In a real app, this is where we'd hit our /api/lead endpoint
-    console.log(`NEW LEAD CAPTURED: URL: ${url}, Email: ${email}`);
+    // Wire to Google Sheets Webhook
+    try {
+      await fetch('https://script.google.com/macros/s/AKfycbw_CNBc4Dy4AJ3B80wORcpgzc0eMOKcxUF0hV2RA0A-Q_AbHap5kxBujwaFo9LADKfu/exec', {
+        method: 'POST',
+        mode: 'no-cors', // Required for Google Scripts
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ businessName: 'Prospect', url, email })
+      });
+    } catch (err) {
+      console.error('Lead capture sync failed:', err);
+    }
     
     setStep('complete')
   }
