@@ -7,7 +7,8 @@ function App() {
   const [isScanning, setIsScanning] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
 
-  const handleAnalyze = () => {
+  const handleAnalyze = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!url) return
     setIsScanning(true)
     
@@ -18,20 +19,29 @@ function App() {
     }, 4000)
   }
 
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  const bookDemo = () => {
+    window.location.href = 'mailto:contact@atlasbiznow.com?subject=Booking a Demo - AtlasBizNow';
+  }
+
   return (
     <div className="min-h-screen">
       {/* Navbar */}
       <nav className="fixed top-0 w-full z-50 glass px-6 py-4 flex justify-between items-center m-4 max-w-[calc(100%-2rem)]">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
           <img src={logo} alt="ABN Logo" className="w-10 h-10" />
           <span className="text-xl font-bold gold-text">AtlasBizNow</span>
         </div>
         <div className="hidden md:flex gap-8 text-sm font-medium">
-          <a href="#services" className="hover:text-amber-400 transition">Services</a>
-          <a href="#audit" className="hover:text-amber-400 transition">Free Audit</a>
-          <a href="#results" className="hover:text-amber-400 transition">Results</a>
+          <button onClick={() => scrollTo('services')} className="hover:text-amber-400 transition">Services</button>
+          <button onClick={() => scrollTo('audit')} className="hover:text-amber-400 transition">Free Audit</button>
+          <button onClick={() => scrollTo('results')} className="hover:text-amber-400 transition">Results</button>
         </div>
-        <button className="btn-primary text-sm">Book Demo</button>
+        <button onClick={bookDemo} className="btn-primary text-sm">Book Demo</button>
       </nav>
 
       {/* Hero */}
@@ -46,8 +56,8 @@ function App() {
             automate your bookings, and scale your content 24/7.
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <button className="btn-primary px-10 py-4 text-lg" onClick={() => document.getElementById('audit')?.scrollIntoView({ behavior: 'smooth' })}>Get My Free Audit</button>
-            <button className="glass px-10 py-4 text-lg font-semibold hover:bg-white/5 transition">See the System</button>
+            <button className="btn-primary px-10 py-4 text-lg" onClick={() => scrollTo('audit')}>Get My Free Audit</button>
+            <button className="glass px-10 py-4 text-lg font-semibold hover:bg-white/5 transition" onClick={() => scrollTo('services')}>See the System</button>
           </div>
         </div>
       </section>
@@ -101,33 +111,34 @@ function App() {
               <h2 className="text-4xl font-black mb-6">Stop Leaving Money On The Table.</h2>
               <p className="text-gray-400 mb-8 text-lg">
                 Our autonomous lead engine scans for the biggest gaps in your current system. 
-                Get a free "Big 3" audit delivered to your inbox.
+                Get a free "Big 3" audit delivered to your inbox in 2 minutes.
               </p>
-              <div className="flex flex-col md:flex-row max-w-xl mx-auto gap-3">
+              <form onSubmit={handleAnalyze} className="flex flex-col md:flex-row max-w-xl mx-auto gap-3">
                 <input 
-                  type="text" 
+                  type="url" 
+                  required
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder="Your Business Website URL (e.g. example.com)" 
+                  placeholder="https://www.your-roofing-site.com" 
                   className="flex-1 bg-white/5 border border-white/10 rounded-lg px-6 py-4 focus:outline-none focus:border-amber-500 transition-all"
                   disabled={isScanning}
                 />
                 <button 
-                  onClick={handleAnalyze}
+                  type="submit"
                   disabled={isScanning || !url}
                   className="btn-primary min-w-[140px] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isScanning ? (
                     <span className="flex items-center justify-center gap-2">
                       <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
-                      Analyzing...
+                      Scanning...
                     </span>
-                  ) : 'Analyze Site'}
+                  ) : 'Analyze'}
                 </button>
-              </div>
+              </form>
               {isScanning && (
                 <div className="mt-6 text-amber-500 font-mono text-sm animate-pulse">
-                  [SYSTEM] Detecting Vision Gaps... Checking Booking Bot...
+                  [SYSTEM] Analyzing SSL... Checking Booking Bot... Detecting Gaps...
                 </div>
               )}
             </>
@@ -144,6 +155,26 @@ function App() {
               </button>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Results Section */}
+      <section id="results" className="py-20 px-6 bg-black/50">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-12">The Results</h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="glass p-8 text-left">
+              <div className="text-4xl font-black gold-text mb-2">+42%</div>
+              <div className="text-xl font-bold mb-4">Booking Increase</div>
+              <p className="text-gray-400">Average increase in booked calls after 30 days of Website Agent deployment.</p>
+            </div>
+            <div className="glass p-8 text-left">
+              <div className="text-4xl font-black gold-text mb-2">24/7</div>
+              <div className="text-xl font-bold mb-4">Lead Capture</div>
+              <p className="text-gray-400">Never miss another lead. Our systems run while you sleep, every single day.</p>
+            </div>
+          </div>
+          <button onClick={bookDemo} className="btn-primary mt-12 px-10 py-4">Scale My Business Now</button>
         </div>
       </section>
 
