@@ -22,16 +22,16 @@ function App() {
     e.preventDefault();
     if (!email) return
     
-    // Wire to Google Sheets Webhook
+    // Wire to Google Sheets Webhook (Sheet + Telegram via Apps Script)
     console.log('Attempting to sync lead:', { url, email });
     try {
-      await fetch('https://script.google.com/macros/s/AKfycbw_CNBc4Dy4AJ3B80wORcpgzc0eMOKcxUF0hV2RA0A-Q_AbHap5kxBujwaFo9LADKfu/exec', {
+      await fetch('https://script.google.com/macros/s/AKfycbzCsoAf1asl2Fw1oxT5Edptt8kBntvOrbH8jA3tqBGGhfF8YfnkBw_eWqSKIgwI0S2S/exec', {
         method: 'POST',
         mode: 'no-cors', 
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ businessName: 'Web Prospect', url, email })
       });
-      console.log('Lead synced successfully (no-cors mode)');
+      console.log('Lead synced successfully');
     } catch (err) {
       console.error('Lead capture sync failed:', err);
     }
