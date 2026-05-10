@@ -4,19 +4,28 @@ import logo from './assets/logo.png'
 
 function App() {
   const [url, setUrl] = useState('')
-  const [isScanning, setIsScanning] = useState(false)
-  const [isComplete, setIsComplete] = useState(false)
+  const [email, setEmail] = useState('')
+  const [step, setStep] = useState('idle') // idle, scanning, gated, complete
 
-  const handleAnalyze = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
+  const startScan = (e: React.FormEvent) => {
+    e.preventDefault();
     if (!url) return
-    setIsScanning(true)
+    setStep('scanning')
     
-    // Simulate high-tech scan for the demo
+    // Step 2: Build tension
     setTimeout(() => {
-      setIsScanning(false)
-      setIsComplete(true)
-    }, 4000)
+      setStep('gated')
+    }, 4500)
+  }
+
+  const submitEmail = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return
+    
+    // In a real app, this is where we'd hit our /api/lead endpoint
+    console.log(`NEW LEAD CAPTURED: URL: ${url}, Email: ${email}`);
+    
+    setStep('complete')
   }
 
   const scrollTo = (id: string) => {
@@ -105,19 +114,19 @@ function App() {
         </div>
       </section>
 
-      {/* Audit CTA */}
+      {/* Audit CTA - The Multi-Step Funnel */}
       <section id="audit" className="py-24 px-6">
         <div className="max-w-4xl mx-auto glass p-12 text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-200 to-amber-600"></div>
           
-          {!isComplete ? (
-            <>
+          {step === 'idle' && (
+            <div className="animate-in fade-in duration-500">
               <h2 className="text-4xl font-black mb-6">Stop Leaving Money On The Table.</h2>
               <p className="text-gray-400 mb-8 text-lg">
-                Our autonomous lead engine scans for the biggest gaps in your current system. 
-                Get a free "Big 3" audit delivered to your inbox in 2 minutes.
+                Our autonomous engine scans for the biggest gaps in your current system. 
+                Get a "Big 3" audit for your site in 2 minutes.
               </p>
-              <form onSubmit={handleAnalyze} className="flex flex-col md:flex-row max-w-xl mx-auto gap-3">
+              <form onSubmit={startScan} className="flex flex-col md:flex-row max-w-xl mx-auto gap-3">
                 <input 
                   type="url" 
                   required
@@ -125,36 +134,55 @@ function App() {
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://www.atlasbiznow.com" 
                   className="flex-1 bg-white/5 border border-white/10 rounded-lg px-6 py-4 focus:outline-none focus:border-amber-500 transition-all"
-                  disabled={isScanning}
                 />
-                <button 
-                  type="submit"
-                  disabled={isScanning || !url}
-                  className="btn-primary min-w-[140px] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isScanning ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin"></div>
-                      Scanning...
-                    </span>
-                  ) : 'Analyze'}
-                </button>
+                <button type="submit" className="btn-primary min-w-[140px]">Analyze</button>
               </form>
-              {isScanning && (
-                <div className="mt-6 text-amber-500 font-mono text-sm animate-pulse">
-                  [SYSTEM] Analyzing SSL... Checking Booking Bot... Detecting Gaps...
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="py-10 animate-in fade-in zoom-in duration-500">
-              <div className="text-6xl mb-6">✅</div>
-              <h2 className="text-4xl font-black mb-4">Analysis Complete!</h2>
-              <p className="text-gray-400 text-lg mb-8 max-w-md mx-auto">
-                We've found 3 critical revenue gaps on <span className="text-amber-400">{url}</span>. 
-                Your full "Big 3" Audit is being sent to your inbox now.
+            </div>
+          )}
+
+          {step === 'scanning' && (
+            <div className="py-10 animate-pulse">
+              <div className="w-20 h-20 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin mx-auto mb-8"></div>
+              <h2 className="text-2xl font-mono gold-text mb-4">AI ENGINE ACTIVE</h2>
+              <div className="text-gray-500 font-mono text-sm space-y-2">
+                <p>[SYSTEM] Scanned SSL Certificates...</p>
+                <p>[SYSTEM] Detecting Booking Gaps...</p>
+                <p>[SYSTEM] Analyzing Content Velocity...</p>
+              </div>
+            </div>
+          )}
+
+          {step === 'gated' && (
+            <div className="animate-in slide-in-from-bottom-10 duration-700">
+              <div className="text-amber-500 text-sm font-bold mb-2 uppercase tracking-widest">Analysis Found 3 Gaps</div>
+              <h2 className="text-4xl font-black mb-6">Where should we send your report?</h2>
+              <p className="text-gray-400 mb-8 text-lg">
+                We've identified critical revenue leaks on <span className="text-white italic">{url}</span>. 
+                Enter your email to receive the full "Big 3" Audit.
               </p>
-              <button onClick={() => setIsComplete(false)} className="text-gray-500 hover:text-white transition text-sm">
+              <form onSubmit={submitEmail} className="flex flex-col md:flex-row max-w-xl mx-auto gap-3">
+                <input 
+                  type="email" 
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your professional email" 
+                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-6 py-4 focus:outline-none focus:border-amber-500 transition-all"
+                />
+                <button type="submit" className="btn-primary min-w-[140px]">Send My Audit</button>
+              </form>
+            </div>
+          )}
+
+          {step === 'complete' && (
+            <div className="py-10 animate-in fade-in zoom-in duration-500">
+              <div className="text-6xl mb-6">🚀</div>
+              <h2 className="text-4xl font-black mb-4">Audit Dispatched!</h2>
+              <p className="text-gray-400 text-lg mb-8 max-w-md mx-auto">
+                Check your inbox at <span className="text-amber-400">{email}</span>. 
+                Our AI agents are compiling the final data and delivering it now.
+              </p>
+              <button onClick={() => setStep('idle')} className="text-gray-500 hover:text-white transition text-sm">
                 Analyze another site
               </button>
             </div>
