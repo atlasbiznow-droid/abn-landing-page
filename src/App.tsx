@@ -123,7 +123,7 @@ function App() {
                   required
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder="https://www.your-roofing-site.com" 
+                  placeholder="https://www.atlasbiznow.com" 
                   className="flex-1 bg-white/5 border border-white/10 rounded-lg px-6 py-4 focus:outline-none focus:border-amber-500 transition-all"
                   disabled={isScanning}
                 />
