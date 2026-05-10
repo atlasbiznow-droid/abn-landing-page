@@ -23,13 +23,15 @@ function App() {
     if (!email) return
     
     // Wire to Google Sheets Webhook
+    console.log('Attempting to sync lead:', { url, email });
     try {
       await fetch('https://script.google.com/macros/s/AKfycbw_CNBc4Dy4AJ3B80wORcpgzc0eMOKcxUF0hV2RA0A-Q_AbHap5kxBujwaFo9LADKfu/exec', {
         method: 'POST',
-        mode: 'no-cors', // Required for Google Scripts
+        mode: 'no-cors', 
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ businessName: 'Prospect', url, email })
+        body: JSON.stringify({ businessName: 'Web Prospect', url, email })
       });
+      console.log('Lead synced successfully (no-cors mode)');
     } catch (err) {
       console.error('Lead capture sync failed:', err);
     }
