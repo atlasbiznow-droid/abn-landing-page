@@ -6,6 +6,7 @@ function App() {
   const [url, setUrl] = useState('')
   const [email, setEmail] = useState('')
   const [step, setStep] = useState('idle') // idle, scanning, gated, complete
+  const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false)
 
   const startScan = (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +50,7 @@ function App() {
   }
 
   const callAgent = () => {
-    window.location.href = 'tel:952-592-8527';
+    setIsVoiceModalOpen(true);
   }
 
   return (
@@ -220,6 +221,36 @@ function App() {
           <button onClick={callAgent} className="btn-primary mt-12 px-10 py-4">Experience the Voice Agent</button>
         </div>
       </section>
+
+      {/* Voice Agent Modal */}
+      {isVoiceModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsVoiceModalOpen(false)}></div>
+          <div className="relative glass p-10 max-w-lg w-full text-center animate-in zoom-in-95 duration-300 border border-amber-500/30 rounded-2xl shadow-[0_0_50px_-12px_rgba(245,158,11,0.3)]">
+            <button 
+              onClick={() => setIsVoiceModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white transition"
+            >
+              ✕
+            </button>
+            <div className="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+              📞
+            </div>
+            <h3 className="text-3xl font-black mb-4 gold-text">Experience the AI</h3>
+            <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+              Call our AI Booking Agent right now at <br/>
+              <span className="text-2xl font-bold text-white mt-2 block tracking-wider">952-592-8527</span>
+              <br/> to hear it in action.
+            </p>
+            <a 
+              href="tel:952-592-8527" 
+              className="btn-primary w-full py-4 text-lg inline-block"
+            >
+              Call Now
+            </a>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="py-20 px-6 border-t border-white/10 text-center">
