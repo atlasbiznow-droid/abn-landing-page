@@ -31,8 +31,9 @@ function App() {
       formData.append('email', email);
       formData.append('name', 'Audit Prospect');
       formData.append('message', `Big 3 Audit Scan requested for: ${url}`);
+      formData.append('source', 'go.atlasbiznow.com');
       
-      await fetch('https://atlasbiznow.com/wp-json/atlasbiznow/v1/newsletter-signup', {
+      await fetch('https://atlasbiznow.com/wp-json/atlasbiznow/v1/subscribe', {
         method: 'POST',
         body: formData
       });
