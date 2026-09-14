@@ -23,8 +23,25 @@ function App() {
     e.preventDefault();
     if (!email) return
     
-    // Wire to Google Sheets Webhook (Sheet + Telegram via Apps Script)
     console.log('Attempting to sync lead:', { url, email });
+    
+    // 1. Dispatch to ABN WordPress REST Endpoint (Triggers Welcome Email + CRM + MailerLite)
+    try {
+      const formData = new FormData();
+      formData.append('email', email);
+      formData.append('name', 'Audit Prospect');
+      formData.append('message', `Big 3 Audit Scan requested for: ${url}`);
+      
+      await fetch('https://atlasbiznow.com/wp-json/atlasbiznow/v1/newsletter-signup', {
+        method: 'POST',
+        body: formData
+      });
+      console.log('Dispatched lead to ABN WordPress REST API (Email + CRM + MailerLite)');
+    } catch (wpErr) {
+      console.error('ABN WordPress REST API sync error:', wpErr);
+    }
+
+    // 2. Wire to Google Sheets Webhook (Backup log)
     try {
       await fetch('https://script.google.com/macros/s/AKfycbzCsoAf1asl2Fw1oxT5Edptt8kBntvOrbH8jA3tqBGGhfF8YfnkBw_eWqSKIgwI0S2S/exec', {
         method: 'POST',
@@ -32,7 +49,7 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ businessName: 'Web Prospect', url, email })
       });
-      console.log('Lead synced successfully');
+      console.log('Lead synced to Google Sheets');
     } catch (err) {
       console.error('Lead capture sync failed:', err);
     }
