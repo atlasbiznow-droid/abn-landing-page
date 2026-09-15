@@ -4,6 +4,7 @@ import logo from './assets/logo.png'
 
 function App() {
   const [url, setUrl] = useState('')
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [step, setStep] = useState('idle') // idle, scanning, gated, complete
   const [isVoiceModalOpen, setIsVoiceModalOpen] = useState(false)
@@ -23,13 +24,13 @@ function App() {
     e.preventDefault();
     if (!email) return
     
-    console.log('Attempting to sync lead:', { url, email });
+    console.log('Attempting to sync lead:', { url, name, email });
     
     // 1. Dispatch to ABN WordPress REST Endpoint (Triggers Welcome Email + CRM + MailerLite)
     try {
       const formData = new FormData();
       formData.append('email', email);
-      formData.append('name', 'Audit Prospect');
+      formData.append('name', name || 'Audit Prospect');
       formData.append('message', `Big 3 Audit Scan requested for: ${url}`);
       formData.append('source', 'go.atlasbiznow.com');
       
@@ -48,7 +49,7 @@ function App() {
         method: 'POST',
         mode: 'no-cors', 
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ businessName: 'Web Prospect', url, email })
+        body: JSON.stringify({ businessName: name || 'Web Prospect', name, url, email })
       });
       console.log('Lead synced to Google Sheets');
     } catch (err) {
@@ -185,21 +186,31 @@ function App() {
           {step === 'gated' && (
             <div className="animate-in slide-in-from-bottom-10 duration-700">
               <div className="text-amber-500 text-sm font-bold mb-2 uppercase tracking-widest">Analysis Found 3 Gaps</div>
-              <h2 className="text-4xl font-black mb-6">Where should we send your report?</h2>
+              <h2 className="text-4xl font-black mb-4">Where should we send your report?</h2>
               <p className="text-gray-400 mb-8 text-lg">
                 We've identified critical revenue leaks on <span className="text-white italic">{url}</span>. 
-                Enter your email to receive the full "Big 3" Audit.
+                Enter your name and email to receive the full "Big 3" Audit.
               </p>
-              <form onSubmit={submitEmail} className="flex flex-col md:flex-row max-w-xl mx-auto gap-3">
-                <input 
-                  type="email" 
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your professional email" 
-                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-6 py-4 focus:outline-none focus:border-amber-500 transition-all"
-                />
-                <button type="submit" className="btn-primary min-w-[140px]">Send My Audit</button>
+              <form onSubmit={submitEmail} className="flex flex-col max-w-xl mx-auto gap-3">
+                <div className="flex flex-col md:flex-row gap-3">
+                  <input 
+                    type="text" 
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Your Name (e.g. Angel)" 
+                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-6 py-4 focus:outline-none focus:border-amber-500 transition-all text-white placeholder-gray-500"
+                  />
+                  <input 
+                    type="email" 
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Your Professional Email" 
+                    className="flex-1 bg-white/5 border border-white/10 rounded-lg px-6 py-4 focus:outline-none focus:border-amber-500 transition-all text-white placeholder-gray-500"
+                  />
+                </div>
+                <button type="submit" className="btn-primary py-4 text-lg w-full mt-1">Send My Audit &rarr;</button>
               </form>
             </div>
           )}
@@ -207,7 +218,7 @@ function App() {
           {step === 'complete' && (
             <div className="py-10 animate-in fade-in zoom-in duration-500">
               <div className="text-6xl mb-6">🚀</div>
-              <h2 className="text-4xl font-black mb-4">Audit Dispatched!</h2>
+              <h2 className="text-4xl font-black mb-4">Audit Dispatched{name ? `, ${name}` : ''}!</h2>
               <p className="text-gray-400 text-lg mb-8 max-w-md mx-auto">
                 Check your inbox at <span className="text-amber-400">{email}</span>. 
                 Our AI agents are compiling the final data and delivering it now.
