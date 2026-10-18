@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const CAL = "https://cal.com/angel-delerme-tnr1ag/15min?theme=light";
+const CAL = "https://cal.com/angel-delerme-tnr1ag/15min?embed=true&layout=month_view&theme=light";
 const DEMO = "https://ig.me/m/atlasbiznow?text=SMILE";
 
 const STEPS = [
