@@ -79,7 +79,7 @@ export default function App() {
           </div>
 
           <div style={{ marginTop: 34, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
-            <a className="btn" href={CAL} target="_blank" rel="noopener">
+            <a className="btn" href={CAL} data-cal-namespace="atlasbiznow" data-cal-link="angel-delerme-tnr1ag/15min" data-cal-config='{"layout":"month_view","theme":"light"}'>
               Claim Your Practice Territory <span className="arrow">→</span>
             </a>
             <span style={{ color: "var(--muted)", fontSize: ".86rem" }}>
@@ -142,7 +142,7 @@ export default function App() {
               complete patient exclusivity.
             </p>
             <div style={{ marginTop: 32 }}>
-              <a className="btn" href={CAL} target="_blank" rel="noopener">
+              <a className="btn" href={CAL} data-cal-namespace="atlasbiznow" data-cal-link="angel-delerme-tnr1ag/15min" data-cal-config='{"layout":"month_view","theme":"light"}'>
                 Claim Your Practice Territory &amp; Schedule Demo <span className="arrow">→</span>
               </a>
             </div>
