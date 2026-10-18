@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const CAL = "https://cal.com/angel-delerme-tnr1ag/15min";
-const DEMO = "https://www.instagram.com/atlasbiznow/";
+const DEMO = "https://ig.me/m/atlasbiznow?text=SMILE";
 
 const STEPS = [
   {
