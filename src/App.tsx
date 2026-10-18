@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const CAL = "https://cal.com/angel-delerme-tnr1ag/15min";
+const CAL = "https://cal.com/angel-delerme-tnr1ag/15min?theme=light";
 const DEMO = "https://ig.me/m/atlasbiznow?text=SMILE";
 
 const STEPS = [
@@ -79,7 +79,7 @@ export default function App() {
           </div>
 
           <div style={{ marginTop: 34, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
-            <a className="btn" href={CAL} data-cal-link="angel-delerme-tnr1ag/15min" data-cal-config='{"layout":"month_view","theme":"light"}'>
+            <a className="btn" href={CAL} target="_blank" rel="noopener">
               Claim Your Practice Territory <span className="arrow">→</span>
             </a>
             <span style={{ color: "var(--muted)", fontSize: ".86rem" }}>
@@ -119,12 +119,12 @@ export default function App() {
               📱 Test Drive the System Right Now on Your Phone
             </h2>
             <ol className="steps">
-              <li><b>1</b><span>Tap the demo link below to open our live Instagram demo Reel.</span></li>
-              <li><b>2</b><span>Comment the word <code>SMILE</code>.</span></li>
+              <li><b>1</b><span>Tap the demo link below to open a direct message to our Instagram.</span></li>
+              <li><b>2</b><span>Send the word <code>SMILE</code>.</span></li>
               <li><b>3</b><span>Check your Instagram DMs within 10 seconds to see your private voucher delivered live.</span></li>
             </ol>
             <a className="btn" href={DEMO} target="_blank" rel="noopener">
-              🚀 Open Live Demo Reel &amp; Comment ‘SMILE’ <span className="arrow">→</span>
+              🚀 Open Live Demo &amp; Send ‘SMILE’ <span className="arrow">→</span>
             </a>
           </div>
         </div>
@@ -142,7 +142,7 @@ export default function App() {
               complete patient exclusivity.
             </p>
             <div style={{ marginTop: 32 }}>
-              <a className="btn" href={CAL} data-cal-link="angel-delerme-tnr1ag/15min" data-cal-config='{"layout":"month_view","theme":"light"}'>
+              <a className="btn" href={CAL} target="_blank" rel="noopener">
                 Claim Your Practice Territory &amp; Schedule Demo <span className="arrow">→</span>
               </a>
             </div>
