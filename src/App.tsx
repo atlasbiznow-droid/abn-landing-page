@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 const CAL = "https://cal.com/angel-delerme-tnr1ag/15min?embed=true&layout=month_view&theme=light";
-const DEMO = "https://ig.me/m/atlasbiznow?text=SMILE";
 
 const STEPS = [
   {
@@ -23,6 +22,14 @@ const STEPS = [
 
 export default function App() {
   const [playing, setPlaying] = useState(false);
+  const [simState, setSimState] = useState<"idle" | "typing" | "delivered">("idle");
+
+  const handleTriggerSim = () => {
+    setSimState("typing");
+    setTimeout(() => {
+      setSimState("delivered");
+    }, 700);
+  };
 
   useEffect(() => {
     const els = document.querySelectorAll<HTMLElement>(".reveal");
@@ -110,22 +117,132 @@ export default function App() {
         </div>
       </section>
 
-      {/* TEST DRIVE */}
+      {/* TEST DRIVE (LIVE INTERACTIVE SIMULATION) */}
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="wrap">
           <div className="testdrive reveal">
-            <span className="eyebrow">Live Test Drive</span>
+            <span className="eyebrow">Interactive Live Test Drive</span>
             <h2 className="h2" style={{ marginTop: 20 }}>
-              📱 Test Drive the System Right Now on Your Phone
+              📱 Experience the 15-Second Patient Capture Live
             </h2>
-            <ol className="steps">
-              <li><b>1</b><span>Tap the demo link below to open a direct message to our Instagram.</span></li>
-              <li><b>2</b><span>Send the word <code>SMILE</code>.</span></li>
-              <li><b>3</b><span>Check your Instagram DMs within 10 seconds to see your private voucher delivered live.</span></li>
-            </ol>
-            <a className="btn" href={DEMO} target="_blank" rel="noopener">
-              🚀 Open Live Demo &amp; Send ‘SMILE’ <span className="arrow">→</span>
-            </a>
+            <p className="lede lead-center" style={{ marginTop: 12, fontSize: "1.02rem" }}>
+              See exactly how an after-hours commenter on your Instagram or Facebook gets qualified, receives their private voucher, and books directly into your schedule.
+            </p>
+
+            {/* SIMULATOR CARD */}
+            <div className="sim-container">
+              <div className="sim-header">
+                <div className="sim-avatar">🦷</div>
+                <div className="sim-practice-info">
+                  <div className="sim-practice-name">
+                    Your Dental Practice
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#1D4ED8">
+                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                  </div>
+                  <div className="sim-status">
+                    <span className="sim-status-dot"></span>
+                    24/7 Automated Concierge Active
+                  </div>
+                </div>
+              </div>
+
+              <div className="sim-body">
+                {simState === "idle" && (
+                  <div className="sim-prompt">
+                    <p style={{ margin: "0 0 10px", fontWeight: 600, color: "var(--text)" }}>
+                      Simulate a prospective patient commenting or DMing "SMILE":
+                    </p>
+                    <p style={{ margin: 0, fontSize: "0.85rem" }}>
+                      Tap the button below to see the instant 15-second response and calendar booking flow.
+                    </p>
+                  </div>
+                )}
+
+                {(simState === "typing" || simState === "delivered") && (
+                  <div className="sim-bubble-patient">
+                    SMILE
+                  </div>
+                )}
+
+                {simState === "typing" && (
+                  <div className="sim-typing">
+                    <span className="sim-dot"></span>
+                    <span className="sim-dot"></span>
+                    <span className="sim-dot"></span>
+                  </div>
+                )}
+
+                {simState === "delivered" && (
+                  <div className="sim-bubble-practice">
+                    <p style={{ margin: "0 0 8px" }}>
+                      👋 <strong>Thanks for reaching out!</strong> Here is your private New Patient Consultation &amp; Full Exam Voucher:
+                    </p>
+                    <div className="sim-voucher-card">
+                      <div className="sim-voucher-title">🏷️ $50 Off Consultation &amp; Exam</div>
+                      <div className="sim-voucher-desc">
+                        Reserved for New Patients · Expiring in 48 Hours
+                      </div>
+                      <a
+                        className="sim-voucher-btn"
+                        href={CAL}
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        🗓️ Pick Open Chair Time Now →
+                      </a>
+                    </div>
+                    <p style={{ margin: "10px 0 0", fontSize: "0.78rem", color: "var(--muted)" }}>
+                      ⚡ Delivered in 12 seconds automatically · No staff required
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="sim-controls">
+                {simState === "idle" && (
+                  <button
+                    type="button"
+                    className="sim-btn-trigger"
+                    onClick={handleTriggerSim}
+                  >
+                    ⚡ Tap to Test: Send “SMILE” →
+                  </button>
+                )}
+
+                {simState === "typing" && (
+                  <button type="button" className="sim-btn-trigger" disabled style={{ opacity: 0.7 }}>
+                    Delivering Private Voucher...
+                  </button>
+                )}
+
+                {simState === "delivered" && (
+                  <>
+                    <a
+                      className="sim-btn-trigger"
+                      href={CAL}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      🚀 Claim Your Practice Territory &amp; Book Demo →
+                    </a>
+                    <button
+                      type="button"
+                      className="sim-btn-reset"
+                      onClick={() => setSimState("idle")}
+                    >
+                      ↻ Reset Simulation
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div style={{ marginTop: 24, textAlign: "center" }}>
+              <span style={{ color: "var(--muted)", fontSize: ".86rem" }}>
+                💡 In live deployment, this runs seamlessly inside your practice's real Instagram &amp; Facebook accounts.
+              </span>
+            </div>
           </div>
         </div>
       </section>
