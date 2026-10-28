@@ -480,3 +480,28 @@ h1, h2, h3 { font-style: normal; margin: 0; }
 @media (prefers-reduced-motion: reduce) { .calc-drag-knob { animation: none; } }
 .calc-row input[type="range"] { height: 22px; }
 .calc-row input[type="range"]::-webkit-slider-thumb { transform: scale(1.15); }
+
+/* ---- live concierge prompt (secondary CTA) ---- */
+.concierge-link {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  max-width: 680px; margin: 0 auto; padding: 12px 20px;
+  border-radius: 999px;
+  border: 1px solid #BFDBFE;
+  background: linear-gradient(180deg, #EFF6FF, #E0ECFF);
+  color: var(--accent);
+  font-size: .9rem; font-weight: 700; line-height: 1.4;
+  text-decoration: none; text-align: left;
+  box-shadow: 0 1px 2px rgba(29,78,216,.08);
+  transition: border-color .18s var(--ease), background .18s var(--ease), transform .18s var(--ease), box-shadow .18s var(--ease);
+}
+.concierge-link:hover {
+  border-color: #93C5FD; background: #DBEAFE;
+  transform: translateY(-1px); box-shadow: 0 8px 22px -12px rgba(29,78,216,.45);
+}
+.concierge-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.concierge-icon { font-size: 1.05rem; line-height: 1; }
+.concierge-link .arrow { flex: 0 0 auto; transition: transform .18s var(--ease); }
+.concierge-link:hover .arrow { transform: translateX(3px); }
+@media (max-width: 760px) {
+  .concierge-link { border-radius: 16px; text-align: center; font-size: .86rem; padding: 12px 14px; }
+}

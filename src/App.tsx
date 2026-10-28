@@ -160,12 +160,17 @@ export default function App() {
 
           <div style={{ marginTop: 22, textAlign: "center" }}>
             <a
+              className="concierge-link"
               href="https://atlasbiznow.com/free-consultation/"
               target="_blank"
               rel="noopener"
-              style={{ color: "var(--accent)", fontSize: ".9rem", textDecoration: "underline", fontWeight: 600 }}
             >
-              Want to test our live web concierge right now? Tap the chat bubble on atlasbiznow.com →
+              <span className="concierge-icon" aria-hidden="true">💬</span>
+              <span>
+                Want to see what your live web concierge and phone booking agent would look like
+                right now? Tap the chat bubble or call the direct number on atlasbiznow.com
+              </span>
+              <span className="arrow" aria-hidden="true">→</span>
             </a>
           </div>
         </div>
