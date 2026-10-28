@@ -455,3 +455,28 @@ h1, h2, h3 { font-style: normal; margin: 0; }
 .calc-result .year { font-size: .82rem; color: #7F1D1D; }
 .calc-result .cue { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #FECACA; font-size: .84rem; color: #7F1D1D; }
 @media (max-width: 760px) { .calc-result .amount { font-size: 1.7rem; } }
+
+/* ---- slider affordance ---- */
+.calc-drag-hint {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: -4px 0 18px; font-size: .74rem; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--accent);
+}
+.calc-drag-track {
+  position: relative; width: 56px; height: 6px; border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent) 0 55%, #DBEAFE 55% 100%);
+  display: inline-block;
+}
+.calc-drag-knob {
+  position: absolute; top: 50%; left: 55%; width: 14px; height: 14px;
+  border-radius: 50%; background: #fff; border: 2px solid var(--accent);
+  transform: translate(-50%, -50%); box-shadow: 0 1px 3px rgba(15,23,42,.25);
+  animation: calcNudge 2.2s var(--ease) infinite;
+}
+@keyframes calcNudge {
+  0%, 100% { transform: translate(-50%, -50%); }
+  50% { transform: translate(calc(-50% + 9px), -50%); }
+}
+@media (prefers-reduced-motion: reduce) { .calc-drag-knob { animation: none; } }
+.calc-row input[type="range"] { height: 22px; }
+.calc-row input[type="range"]::-webkit-slider-thumb { transform: scale(1.15); }
