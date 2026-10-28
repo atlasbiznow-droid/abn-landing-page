@@ -21,7 +21,6 @@ const STEPS = [
 ];
 
 function RevenueLeakCalculator() {
-  const [chairs, setChairs] = useState(4);
   const [caseValue, setCaseValue] = useState(1200);
   const [missedInquiries, setMissedInquiries] = useState(15);
 
@@ -36,7 +35,7 @@ function RevenueLeakCalculator() {
         <span className="calc-eyebrow">Interactive Practice Diagnostic</span>
         <h3 className="calc-title">Calculate Your After-Hours Revenue Leak</h3>
         <p className="calc-sub" style={{ marginTop: 8, color: "var(--accent)", fontWeight: 700 }}>
-          ⇆ Drag the three sliders below to match your practice — your estimate updates instantly.
+          ⇆ Drag the two sliders below to match your practice — your estimate updates instantly.
         </p>
         <p className="calc-sub">Based on ADA benchmarks: 87% of dental callers hang up on voicemail.</p>
       </div>
@@ -44,14 +43,6 @@ function RevenueLeakCalculator() {
       <div className="calc-drag-hint" aria-hidden="true">
         <span className="calc-drag-track"><span className="calc-drag-knob" /></span>
         Drag to adjust
-      </div>
-
-      <div className="calc-row">
-        <div className="lbl">
-          <span>Active operatories (chairs):</span>
-          <strong>{chairs} chairs</strong>
-        </div>
-        <input type="range" min="2" max="12" step="1" value={chairs} onChange={(e) => setChairs(Number(e.target.value))} aria-label="Active operatories" />
       </div>
 
       <div className="calc-row">
