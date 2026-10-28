@@ -20,6 +20,60 @@ const STEPS = [
   },
 ];
 
+function RevenueLeakCalculator() {
+  const [chairs, setChairs] = useState(4);
+  const [caseValue, setCaseValue] = useState(1200);
+  const [missedInquiries, setMissedInquiries] = useState(15);
+
+  // ADA / PatientPrism benchmarks: 87% of callers hang up on voicemail;
+  // conservative 20% of those would have become booked patients.
+  const monthlyLeak = Math.round(missedInquiries * 0.87 * 0.2 * caseValue * 4.33);
+  const annualLeak = monthlyLeak * 12;
+
+  return (
+    <div className="calc-card reveal">
+      <div style={{ textAlign: "center", marginBottom: 20 }}>
+        <span className="calc-eyebrow">Interactive Practice Diagnostic</span>
+        <h3 className="calc-title">Calculate Your After-Hours Revenue Leak</h3>
+        <p className="calc-sub">Based on ADA benchmarks: 87% of dental callers hang up on voicemail.</p>
+      </div>
+
+      <div className="calc-row">
+        <div className="lbl">
+          <span>Active operatories (chairs):</span>
+          <strong>{chairs} chairs</strong>
+        </div>
+        <input type="range" min="2" max="12" step="1" value={chairs} onChange={(e) => setChairs(Number(e.target.value))} aria-label="Active operatories" />
+      </div>
+
+      <div className="calc-row">
+        <div className="lbl">
+          <span>Avg. new-patient treatment value:</span>
+          <strong>${caseValue.toLocaleString()}</strong>
+        </div>
+        <input type="range" min="500" max="3000" step="100" value={caseValue} onChange={(e) => setCaseValue(Number(e.target.value))} aria-label="Average treatment value" />
+      </div>
+
+      <div className="calc-row">
+        <div className="lbl">
+          <span>After-hours / unanswered inquiries per week:</span>
+          <strong>{missedInquiries} inquiries</strong>
+        </div>
+        <input type="range" min="5" max="35" step="1" value={missedInquiries} onChange={(e) => setMissedInquiries(Number(e.target.value))} aria-label="Missed inquiries per week" />
+      </div>
+
+      <div className="calc-result">
+        <div className="kick">Estimated practice revenue bleed</div>
+        <div className="amount">
+          -${monthlyLeak.toLocaleString()} <span>/ month</span>
+        </div>
+        <div className="year">(-${annualLeak.toLocaleString()} / year walking out to competing clinics)</div>
+        <div className="cue">👇 <strong>Watch the 45-second video below</strong> to see how the 3-step capture system plugs this leak.</div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [playing, setPlaying] = useState(false);
   const [simState, setSimState] = useState<"idle" | "typing" | "delivered">("idle");
@@ -65,6 +119,8 @@ export default function App() {
             straight into your calendar.
           </p>
 
+          <RevenueLeakCalculator />
+
           <div className="video-card">
             <div className="video-frame">
               {playing ? (
@@ -92,6 +148,17 @@ export default function App() {
             <span style={{ color: "var(--muted)", fontSize: ".86rem" }}>
               One dental practice per zone · Month-to-month
             </span>
+          </div>
+
+          <div style={{ marginTop: 22, textAlign: "center" }}>
+            <a
+              href="https://atlasbiznow.com/free-consultation/"
+              target="_blank"
+              rel="noopener"
+              style={{ color: "var(--accent)", fontSize: ".9rem", textDecoration: "underline", fontWeight: 600 }}
+            >
+              Want to test our live web concierge right now? Tap the chat bubble on atlasbiznow.com →
+            </a>
           </div>
         </div>
       </section>

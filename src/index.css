@@ -429,3 +429,29 @@ h1, h2, h3 { font-style: normal; margin: 0; }
   .reveal { opacity: 1; transform: none; transition: none; }
   .btn, .card, .video-card, .play .puck { transition: none; }
 }
+
+/* ---- revenue leak calculator (light clinical) ---- */
+.calc-card {
+  width: 100%; max-width: 640px;
+  margin: 32px auto 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 26px 24px;
+  text-align: left;
+  box-shadow: 0 1px 2px rgba(15,23,42,.03), 0 20px 44px -30px rgba(15,23,42,.20);
+}
+.calc-eyebrow { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); }
+.calc-title { font-size: 1.3rem; font-weight: 800; color: var(--text); margin-top: 6px; letter-spacing: -.02em; }
+.calc-sub { color: var(--muted); font-size: .86rem; margin-top: 4px; }
+.calc-row { margin-bottom: 16px; }
+.calc-row .lbl { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; font-size: .88rem; color: var(--muted); }
+.calc-row .lbl strong { color: var(--text); white-space: nowrap; }
+.calc-row input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+.calc-result { background: #FEF2F2; border: 1px solid #FECACA; border-radius: 12px; padding: 16px 18px; text-align: center; }
+.calc-result .kick { font-size: .74rem; color: #B91C1C; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+.calc-result .amount { font-size: 2.05rem; font-weight: 800; color: #DC2626; margin: 4px 0; letter-spacing: -.03em; line-height: 1.05; }
+.calc-result .amount span { font-size: .88rem; color: #7F1D1D; font-weight: 500; letter-spacing: 0; }
+.calc-result .year { font-size: .82rem; color: #7F1D1D; }
+.calc-result .cue { margin-top: 10px; padding-top: 10px; border-top: 1px dashed #FECACA; font-size: .84rem; color: #7F1D1D; }
+@media (max-width: 760px) { .calc-result .amount { font-size: 1.7rem; } }
