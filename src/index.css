@@ -512,7 +512,7 @@ h1, h2, h3 { font-style: normal; margin: 0; }
 
 
 /* ---- speed-to-lead ---- */
-.s2l { padding: 72px 0; }
+.s2l { padding: 72px 0; scroll-margin-top: 24px; }
 .s2l-wrap { width: min(100% - 40px, var(--maxw)); margin-inline: auto; }
 .s2l-card {
   display: grid;

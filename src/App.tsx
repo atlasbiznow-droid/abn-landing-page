@@ -299,6 +299,29 @@ export default function App() {
     }, 700);
   };
 
+  // Jump to #hash target once the app has mounted and layout has settled.
+  useEffect(() => {
+    let cancelled = false;
+    const cancel = () => { cancelled = true; };
+    const scrollToHash = () => {
+      if (cancelled) return;
+      const id = window.location.hash.slice(1);
+      if (!id) return;
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ block: "start", behavior: "auto" });
+    };
+    window.addEventListener("wheel", cancel, { passive: true, once: true });
+    window.addEventListener("touchstart", cancel, { passive: true, once: true });
+    window.addEventListener("hashchange", scrollToHash);
+    const timers = [60, 250, 700, 1400].map((t) => window.setTimeout(scrollToHash, t));
+    return () => {
+      timers.forEach((t) => window.clearTimeout(t));
+      window.removeEventListener("hashchange", scrollToHash);
+      window.removeEventListener("wheel", cancel);
+      window.removeEventListener("touchstart", cancel);
+    };
+  }, []);
+
   useEffect(() => {
     const els = document.querySelectorAll<HTMLElement>(".reveal");
     const io = new IntersectionObserver(
