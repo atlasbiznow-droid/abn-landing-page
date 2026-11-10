@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { FormEvent } from "react";
 
 const CAL = "https://cal.com/angel-delerme-tnr1ag/15min?embed=true&layout=month_view&theme=light";
 
@@ -70,6 +71,220 @@ function RevenueLeakCalculator() {
         <div className="cue">👇 <strong>Watch the 45-second video below</strong> to see how the 3-step capture system plugs this leak.</div>
       </div>
     </div>
+  );
+}
+
+
+const SPEED_TO_LEAD_API =
+  import.meta.env.VITE_SPEED_TO_LEAD_API ||
+  "https://solving-folk-colours-celtic.trycloudflare.com/api/webhook/speed-to-lead";
+const FALLBACK_PHONE = "+19525928527";
+const FALLBACK_PHONE_DISPLAY = "(952) 592-8527";
+
+const RATE_KEY = "abn_speed_to_lead_attempts";
+const COOLDOWN_MS = 60_000;
+const HOUR_MS = 3_600_000;
+const MAX_PER_HOUR = 3;
+const DIAL_SECONDS = 15;
+
+type Stage = "idle" | "sending" | "dialing" | "done" | "error";
+
+function readAttempts(): number[] {
+  try {
+    const raw = window.localStorage.getItem(RATE_KEY);
+    const parsed: unknown = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter((n): n is number => typeof n === "number") : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeAttempts(list: number[]) {
+  try {
+    window.localStorage.setItem(RATE_KEY, JSON.stringify(list.slice(-20)));
+  } catch {
+    /* storage unavailable; server-side limits still apply */
+  }
+}
+
+function normalizePhone(input: string): string | null {
+  const digits = input.replace(/\D/g, "");
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
+  return null;
+}
+
+function displayPhone(e164: string): string {
+  const d = e164.replace(/\D/g, "").replace(/^1/, "");
+  return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}`;
+}
+
+function SpeedToLead() {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [stage, setStage] = useState<Stage>("idle");
+  const [error, setError] = useState("");
+  const [seconds, setSeconds] = useState(DIAL_SECONDS);
+  const [dialTo, setDialTo] = useState("");
+  const deadline = useRef(0);
+
+  useEffect(() => {
+    if (stage !== "dialing") return;
+    const tick = () => {
+      const left = Math.max(0, Math.ceil((deadline.current - Date.now()) / 1000));
+      setSeconds(left);
+      if (left === 0) setStage("done");
+    };
+    tick();
+    const id = window.setInterval(tick, 250);
+    return () => window.clearInterval(id);
+  }, [stage]);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (stage === "sending" || stage === "dialing") return;
+
+    const cleanName = name.trim();
+    const e164 = normalizePhone(phone);
+    if (cleanName.length < 2) {
+      setError("Enter your first name.");
+      return;
+    }
+    if (!e164) {
+      setError("Enter a 10-digit US mobile number.");
+      return;
+    }
+
+    const now = Date.now();
+    const attempts = readAttempts().filter((t) => now - t < HOUR_MS);
+    const last = attempts[attempts.length - 1] ?? 0;
+    if (last && now - last < COOLDOWN_MS) {
+      setError(`Please wait ${Math.ceil((COOLDOWN_MS - (now - last)) / 1000)}s before trying again.`);
+      return;
+    }
+    if (attempts.length >= MAX_PER_HOUR) {
+      setError("Demo limit reached for this hour. Call us instead.");
+      return;
+    }
+
+    setError("");
+    setStage("sending");
+    try {
+      const response = await fetch(SPEED_TO_LEAD_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          client_id: "abn_internal",
+          lead_name: cleanName,
+          lead_phone: e164,
+          service_requested: "Speed-to-lead demo",
+        }),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      writeAttempts([...attempts, now]);
+      setDialTo(displayPhone(e164));
+      deadline.current = Date.now() + DIAL_SECONDS * 1000;
+      setSeconds(DIAL_SECONDS);
+      setStage("dialing");
+    } catch {
+      setStage("error");
+      setError("We couldn't start the call. Try once more, or call us directly.");
+    }
+  };
+
+  const busy = stage === "sending" || stage === "dialing";
+
+  return (
+    <section className="s2l" id="speed-to-lead" aria-labelledby="s2l-title">
+      <div className="s2l-wrap">
+        <div className="s2l-card">
+          <div className="s2l-copy">
+            <h2 className="s2l-title" id="s2l-title">
+              Hear Annie call your phone.
+            </h2>
+            <p className="s2l-sub">
+              Enter your name and mobile number. Annie dials within 15 seconds and asks two
+              quick questions.
+            </p>
+            <p className="s2l-fine">
+              One demo call per number. Standard call rates may apply.
+            </p>
+          </div>
+
+          <div className="s2l-panel">
+            <form className="s2l-form" onSubmit={handleSubmit} noValidate>
+              <label className="s2l-field">
+                <span>Name</span>
+                <input
+                  className="s2l-input"
+                  name="name"
+                  autoComplete="given-name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  disabled={busy}
+                  required
+                />
+              </label>
+              <label className="s2l-field">
+                <span>Mobile number</span>
+                <input
+                  className="s2l-input"
+                  name="phone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  placeholder="(555) 000-0000"
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
+                  disabled={busy}
+                  required
+                />
+              </label>
+              <button className="s2l-btn" type="submit" disabled={busy}>
+                {stage === "sending" ? "Starting call…" : "Call my phone"}
+              </button>
+            </form>
+
+            {stage === "dialing" && (
+              <div className="s2l-status" aria-live="polite">
+                <p className="s2l-status-line">
+                  Dialing <strong>{dialTo}</strong>
+                </p>
+                <p className="s2l-count">
+                  {seconds}
+                  <span>s</span>
+                </p>
+                <div className="s2l-track" aria-hidden="true">
+                  <span
+                    className="s2l-fill"
+                    style={{ transform: `scaleX(${Math.max(seconds, 0) / DIAL_SECONDS})` }}
+                  />
+                </div>
+                <p className="s2l-note">Keep your phone close. Annie will introduce herself.</p>
+              </div>
+            )}
+
+            {stage === "done" && (
+              <div className="s2l-status" aria-live="polite">
+                <p className="s2l-status-line">
+                  <strong>{dialTo}</strong> should be ringing now.
+                </p>
+                <p className="s2l-note">
+                  Nothing yet? Call{" "}
+                  <a href={`tel:${FALLBACK_PHONE}`}>{FALLBACK_PHONE_DISPLAY}</a>.
+                </p>
+              </div>
+            )}
+
+            {error && (
+              <p className="s2l-error" role="alert">
+                {error}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -317,6 +532,8 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      <SpeedToLead />
 
       {/* FINAL CTA */}
       <section className="section final">
