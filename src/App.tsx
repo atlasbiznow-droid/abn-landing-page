@@ -82,9 +82,9 @@ const FALLBACK_PHONE = "+19525928527";
 const FALLBACK_PHONE_DISPLAY = "(952) 592-8527";
 
 const RATE_KEY = "abn_speed_to_lead_attempts";
-const COOLDOWN_MS = 60_000;
-const HOUR_MS = 3_600_000;
-const MAX_PER_HOUR = 3;
+const COOLDOWN_MS = 15_000; // 15-second cooldown (ready right after dialing finishes)
+const WINDOW_MS = 900_000; // 15-minute window
+const MAX_PER_WINDOW = 2; // Exactly 2 calls per 15 minutes
 const DIAL_SECONDS = 15;
 
 type Stage = "idle" | "sending" | "dialing" | "done" | "error";
@@ -156,14 +156,15 @@ function SpeedToLead() {
     }
 
     const now = Date.now();
-    const attempts = readAttempts().filter((t) => now - t < HOUR_MS);
+    const attempts = readAttempts().filter((t) => now - t < WINDOW_MS);
     const last = attempts[attempts.length - 1] ?? 0;
     if (last && now - last < COOLDOWN_MS) {
-      setError(`Please wait ${Math.ceil((COOLDOWN_MS - (now - last)) / 1000)}s before trying again.`);
+      const waitSec = Math.max(1, Math.ceil((COOLDOWN_MS - (now - last)) / 1000));
+      setError(`Dialing in progress. Please wait ${waitSec}s before retrying.`);
       return;
     }
-    if (attempts.length >= MAX_PER_HOUR) {
-      setError("Demo limit reached for this hour. Call us instead.");
+    if (attempts.length >= MAX_PER_WINDOW) {
+      setError("Demo limit reached (2 calls per 15 mins). Call us directly at (952) 592-8527.");
       return;
     }
 
@@ -181,6 +182,12 @@ function SpeedToLead() {
         }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json().catch(() => ({}));
+      if (data.status === "throttled") {
+        setError(data.message || "Demo limit reached (2 calls per 15 mins). Call us instead.");
+        setStage("idle");
+        return;
+      }
       writeAttempts([...attempts, now]);
       setDialTo(displayPhone(e164));
       deadline.current = Date.now() + DIAL_SECONDS * 1000;
@@ -220,7 +227,10 @@ function SpeedToLead() {
                   name="name"
                   autoComplete="given-name"
                   value={name}
-                  onChange={(event) => setName(event.target.value)}
+                  onChange={(event) => {
+                    setName(event.target.value);
+                    if (error) setError("");
+                  }}
                   disabled={busy}
                   required
                 />
@@ -235,7 +245,10 @@ function SpeedToLead() {
                   autoComplete="tel"
                   placeholder="(555) 000-0000"
                   value={phone}
-                  onChange={(event) => setPhone(event.target.value)}
+                  onChange={(event) => {
+                    setPhone(event.target.value);
+                    if (error) setError("");
+                  }}
                   disabled={busy}
                   required
                 />
