@@ -77,7 +77,7 @@ function RevenueLeakCalculator() {
 
 const SPEED_TO_LEAD_API =
   import.meta.env.VITE_SPEED_TO_LEAD_API ||
-  "https://solving-folk-colours-celtic.trycloudflare.com/api/webhook/speed-to-lead";
+  "https://writing-theaters-activated-frozen.trycloudflare.com/api/webhook/speed-to-lead";
 const FALLBACK_PHONE = "+19525928527";
 const FALLBACK_PHONE_DISPLAY = "(952) 592-8527";
 
